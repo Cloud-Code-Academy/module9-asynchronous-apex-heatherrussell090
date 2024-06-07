@@ -27,9 +27,22 @@ public with sharing class NextStepFuture {
      * Opportunity Next Step field is a standard field
      * Update the corresponding test class AsynchronousTest and test method nextStepFuture_testUpdateAllNextStep to cover test this method
      */
-    //[public | private ] [static] data_type method_name (input parameters) {
-    //  The body of the method
-    //}
+    @future
+    public static void updateNextStep () {
+      List<Account> accountsToUpdate = [SELECT Id, Next_Step__c FROM Account];
+      List<Opportunity> oppsToUpdate = [SELECT Id, NextStep FROM Opportunity];
+
+      for(Account acc : accountsToUpdate) {
+        acc.Next_Step__c = 'Meeting in the future';
+      }
+
+      for(Opportunity opp : oppsToUpdate) {
+        opp.NextStep = 'Meeting in the future';
+      }
+
+      update accountsToUpdate;
+      update oppsToUpdate;
+    }
 
     /*
     * Question 2
@@ -41,8 +54,14 @@ public with sharing class NextStepFuture {
     public static void createDealAndUpdateRole() {
         Opportunity bigDeal = new Opportunity();
         insertBigDeal(bigDeal);
+        retrieveUser();
+    }
 
-        UserRole[] roles = [SELECT Id, Name FROM UserRole WHERE Id = :UserInfo.getUserRoleId() OR Name = 'CRO' LIMIT 1];
+    @future
+    public static void retrieveUser() {
+        UserRole[] roles = [SELECT Id, Name
+                            FROM UserRole
+                            WHERE Id = :UserInfo.getUserRoleId() OR Name = 'CRO' LIMIT 1];
         updateUserRoleName(roles);
     }
 
